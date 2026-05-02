@@ -29,7 +29,6 @@ void insert_node (Node** list, int data, int line, int col) {
 
     // list is empty or the new node comes before the current head
     if (*list == NULL || (*list)->line > line || ((*list)->line == line && (*list)->col > col)) {
-        item->next = *list;
         *list = item;
         return;
     }
@@ -37,7 +36,7 @@ void insert_node (Node** list, int data, int line, int col) {
     //ordernar pela menor linhas e dps pela coluna da linha
     Node *aux = *list;
 
-    while (aux->next != NULL && aux->next->line <= line && aux->next->col <= col){
+    while (aux->next != NULL){
         //greater than the line
         if (aux->next->line > line){
             break;
@@ -47,6 +46,7 @@ void insert_node (Node** list, int data, int line, int col) {
         if (aux->next->line == line && aux->next->col > col){
             break;
         }
+
         aux = aux->next;
     }
     item->next = aux->next;
@@ -113,7 +113,7 @@ void free_list(Node** list){
 
 int main () {
     int lines,cols,action, data_line, data_col, data;
-    Node *list;
+    Node *list = NULL;
     action = 0;
 
     printf("informe a dimensao da matriz\n");
@@ -123,7 +123,7 @@ int main () {
     printf("colunas: \n");
     scanf("%d",&cols);
 
-    while (1 == 1) {
+    while (action != 10){
         printf("\n--------------------------------------------\n");
         printf("\nAcoes possiveis:\n");
         printf("1) Inserir dado\n");
@@ -142,23 +142,23 @@ int main () {
 
         switch (action)
         {
-        case 1:
-            printf("Insira o valor para insercao:\n");
-            scanf("%d", &data);
-            printf("Insira a linha:\n");
-            scanf("%d", &data_line);
-            printf("Insira a coluna:\n");
-            scanf("%d", &data_col);
-            insert_node(&list, data, data_line, data_col);
-            break;
-        case 8:
-            show(&list, lines, cols);
-            break;
-        case 9:
-            return 0;
-            break;
-        default:
-            break;
+            case 1:
+                printf("Insira o valor para insercao:\n");
+                scanf("%d", &data);
+                printf("Insira a linha:\n");
+                scanf("%d", &data_line);
+                printf("Insira a coluna:\n");
+                scanf("%d", &data_col);
+                insert_node(&list, data, data_line, data_col);
+                break;
+            case 8:
+                show(&list, lines, cols);
+                break;
+            case 10:
+                return 0;
+                break;
+            default:
+                break;
         }
     }
 
