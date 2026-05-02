@@ -65,7 +65,7 @@ void search_data(Node** list, int data){
     }
 
     if (found != 1){
-        printf("Dado não encontrado na matriz!");
+        printf("Dado nao encontrado na matriz!");
         return;
     }
 
@@ -101,7 +101,14 @@ void show(Node** list, int lines, int cols){
 }
 
 void free_list(Node** list){
+    Node *aux, *previous;
+    aux = *list;
 
+    while (aux != NULL){
+        previous = aux;
+        aux = previous->next;
+        free(previous);
+    }
 }
 
 int main () {
