@@ -85,14 +85,11 @@ void insert_sequentially(Node** list, int lines, int cols) {
         for(int j = 1; j <= cols; j++){
             printf("Valor para linha %d e coluna %d: \n", i, j);
             scanf("%d", &data);
-            if (data == 0) {
-                continue;
+            if (data != 0) {
+                insert_node(list, data, i - 1, j - 1);
             }
-            insert_node(list, data, i - 1, j - 1);
         }
     }
-
-    show(list, lines, cols);
 }
 
 void initialize_second_matrix(Node** second_list, int lines, int cols){
@@ -173,6 +170,42 @@ void sum_matrixes(Node** first_list, Node** second_list, int lines, int cols){
 
 }
 
+void subtract_matrixes(Node** first_list, Node** second_list, int lines, int cols){
+    int current_line, current_col;
+    Node *aux_first = *first_list;
+    Node *aux_second = *second_list;
+
+    printf("Resultado da subtracao das matrizes:\n");
+    for (current_line = 0; current_line < lines; current_line++){
+        int first_list_items[cols];
+        int second_list_items[cols];
+
+        memset(first_list_items, 0, sizeof(first_list_items));
+        memset(second_list_items, 0, sizeof(second_list_items));
+
+        while (aux_first != NULL && aux_first->line == current_line){
+            first_list_items[aux_first->col] = aux_first->data;
+            aux_first = aux_first->next;
+        }
+
+        while (aux_second != NULL && aux_second->line == current_line){
+            second_list_items[aux_second->col] = aux_second->data;
+            aux_second = aux_second->next;
+        }
+
+        printf("[ ");
+        for ( current_col = 0; current_col < cols; current_col++)
+        {
+            int sub = first_list_items[current_col] - second_list_items[current_col];
+            printf("%d",sub);
+            if (current_col < cols - 1){
+                printf(", ");
+            }
+        }
+        printf(" ]\n");
+    }
+}
+
 void free_list(Node** list){
     Node *aux, *previous;
     aux = *list;
@@ -250,7 +283,7 @@ int main () {
                     printf("Inicialize uma segunda matriz para realizar a subtracao:\n");
                     initialize_second_matrix(&second_list, lines, cols);
                 }
-                // Implement subtracao de matrizes
+                subtract_matrixes(&list,&second_list,lines,cols);
                 break;
             case 8:
                 show(&list, lines, cols);
