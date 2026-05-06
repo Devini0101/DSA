@@ -92,28 +92,6 @@ void insert_sequentially(Node** list, int lines, int cols) {
     }
 }
 
-void initialize_second_matrix(Node** second_list, int lines, int cols){
-    int data, data_line, data_col;
-    printf("1) Inserir dados Individualmente\n");
-    printf("2) Inserir dados Sequencialmente\n");
-    scanf("%d", &data);
-    if (data == 1) {
-        while(1 == 1){
-            printf("Insira o valor para insercao:\n");
-            scanf("%d", &data);
-            if (data == 0){
-                break;
-            }
-            printf("Insira a linha:\n");
-            scanf("%d", &data_line);
-            printf("Insira a coluna:\n");
-            scanf("%d", &data_col);
-            insert_node(second_list, data, data_line - 1, data_col -1);
-        }
-    } else {
-        insert_sequentially(second_list, lines, cols);
-    }
-}
 
 void search_data(Node** list, int data){
     Node *aux = *list;
@@ -206,6 +184,54 @@ void subtract_matrixes(Node** first_list, Node** second_list, int lines, int col
     }
 }
 
+void multiply_matrixes(Node** first_list, Node** second_list, int lines, int cols){
+    //TODO
+    Node *aux_first = *first_list;
+
+    int current_line, current_col;
+    //montar linha da primeira matriza e coluna da segunda, assim multiplicando os itens
+
+    for (current_line = 0; current_line < lines; current_line++){
+        int first_list_line[cols];
+        memset(first_list_line, 0, sizeof(first_list_line));
+
+        //linha completa da primeira matriz
+        while (aux_first != NULL && aux_first->line == current_line){
+            first_list_line[aux_first->col] = aux_first->data;
+            aux_first = aux_first->next;
+        }
+
+        printf("[ ");
+
+        for (current_col = 0; current_col < cols; current_col ++){
+            Node *aux_second = *second_list; // restart pointer for every column
+
+            int second_list_col[lines];
+            memset(second_list_col, 0, sizeof(second_list_col));
+
+            while(aux_second != NULL){
+                if (aux_second->col == current_col){
+                    second_list_col[aux_second->line] = aux_second->data;
+                }
+                aux_second = aux_second->next;
+            }
+
+            int sum = 0;
+            //iterate through the line multiplying the value from the col from the second matrix and summing the total
+            for (int i = 0; i < cols; i++){
+                sum += first_list_line[i] * second_list_col[i];
+            }
+
+            printf("%d", sum);
+            if (current_col < cols - 1){
+                printf(", ");
+            }
+
+        }
+        printf(" ]\n");
+    }
+}
+
 void free_list(Node** list){
     Node *aux, *previous;
     aux = *list;
@@ -232,19 +258,18 @@ int main () {
     printf("colunas: \n");
     scanf("%d",&cols);
 
-    while (action != 10){
+    while (action != 9){
         printf("\n--------------------------------------------\n");
         printf("\nAcoes possiveis:\n");
         printf("1) Inserir dado\n");
         printf("2) Busca dado\n");
-        printf("3) Inserir dados sequenciais (vai inserindo e eu deixo na ordem, inserir tambem 0)\n");
-        printf("4) Soma matrizes\n");
-        printf("5) Subtrai matrizes\n");
-        printf("6) Multiplica matrizes\n");
+        printf("3) Soma matrizes\n");
+        printf("4) Subtrai matrizes\n");
+        printf("5) Multiplica matrizes\n");
+        printf("6) Mostra Matriz\n");
         printf("7) Gerar matriz transposta\n");
-        printf("8) Mostra Matriz (incluindo 0)\n");
-        printf("9) Mostra Diagonal Principal (incluindo 0)\n");
-        printf("10) Encerrar\n");
+        printf("8) Mostra Diagonal Principal (incluindo 0s)\n");
+        printf("9) Encerrar\n");
         printf("--------------------------------------------\n");
 
         printf("Insira a acao a ser realizada:\n");
@@ -253,13 +278,8 @@ int main () {
         switch (action)
         {
             case 1:
-                printf("Insira o valor para insercao:\n");
-                scanf("%d", &data);
-                printf("Insira a linha:\n");
-                scanf("%d", &data_line);
-                printf("Insira a coluna:\n");
-                scanf("%d", &data_col);
-                insert_node(&list, data, data_line - 1, data_col - 1);
+                printf("Insira dados sequenciais:\n");
+                insert_sequentially(&list, lines, cols);
                 break;
             case 2:
                 printf("Insira o valor para busca\n");
@@ -267,28 +287,30 @@ int main () {
                 search_data(&list, data);
                 break;
             case 3:
-                printf("Insira dados sequenciais:\n");
-                insert_sequentially(&list, lines, cols);
+                if (second_list == NULL){
+                    printf("Inicialize uma segunda matriz para realizar a soma:\n");
+                    insert_sequentially(&second_list, lines, cols);
+                }
+                sum_matrixes(&list, &second_list, lines, cols);
                 break;
             case 4:
                 if (second_list == NULL){
-                    printf("Inicialize uma segunda matriz para realizar a soma:\n");
-                    initialize_second_matrix(&second_list, lines, cols);
-                }
-                show(&second_list, lines, cols);
-                sum_matrixes(&list, &second_list, lines, cols);
-                break;
-            case 5:
-                if (second_list == NULL){
                     printf("Inicialize uma segunda matriz para realizar a subtracao:\n");
-                    initialize_second_matrix(&second_list, lines, cols);
+                    insert_sequentially(&second_list, lines, cols);
                 }
                 subtract_matrixes(&list,&second_list,lines,cols);
                 break;
-            case 8:
+            case 5:
+                if (second_list == NULL){
+                    printf("Inicialize uma segunda matriz para realizar a multiplicacao:\n");
+                    insert_sequentially(&second_list, lines, cols);
+                }
+                multiply_matrixes(&list, &second_list, lines, cols);
+                break;
+            case 6:
                 show(&list, lines, cols);
                 break;
-            case 10:
+            case 9:
                 free_list(&list);
                 free_list(&second_list);
                 return 0;
