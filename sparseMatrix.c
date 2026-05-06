@@ -185,24 +185,23 @@ void subtract_matrixes(Node** first_list, Node** second_list, int lines, int col
 }
 
 void multiply_matrixes(Node** first_list, Node** second_list, int lines, int cols){
-    //TODO
     Node *aux_first = *first_list;
 
     int current_line, current_col;
-    //montar linha da primeira matriza e coluna da segunda, assim multiplicando os itens
+    printf("Resultado da multiplicacao das matrizes:\n");
 
     for (current_line = 0; current_line < lines; current_line++){
         int first_list_line[cols];
         memset(first_list_line, 0, sizeof(first_list_line));
 
-        //linha completa da primeira matriz
+        //first matriz line
         while (aux_first != NULL && aux_first->line == current_line){
             first_list_line[aux_first->col] = aux_first->data;
             aux_first = aux_first->next;
         }
 
         printf("[ ");
-
+        //second matrix for each column
         for (current_col = 0; current_col < cols; current_col ++){
             Node *aux_second = *second_list; // restart pointer for every column
 
