@@ -231,6 +231,31 @@ void multiply_matrixes(Node** first_list, Node** second_list, int lines, int col
     }
 }
 
+// Shows the main diagonal
+void show_main_diagonal(Node** list, int lines, int cols) {
+    int size = lines < cols ? lines : cols;
+
+    printf("Diagonal principal:\n[ ");
+    for (int i = 0; i < size; i++) {
+        int found = 0;
+        Node *aux = *list;
+
+        while (aux != NULL) {
+            if (aux->line == i && aux->col == i) {
+                printf("%d", aux->data);
+                found = 1;
+                break;
+            }
+            aux = aux->next;
+        }
+
+        // not in the list = was zero
+        if (!found) printf("0");
+        if (i < size - 1) printf(", ");
+    }
+    printf(" ]\n");
+}
+
 void free_list(Node** list){
     Node *aux, *previous;
     aux = *list;
@@ -240,6 +265,23 @@ void free_list(Node** list){
         aux = previous->next;
         free(previous);
     }
+}
+
+// replace col with line
+void generate_transpose(Node** list, int lines, int cols) {
+    Node *transposed = NULL;
+    Node *aux = *list;
+
+    // swap line <-> col for each node when inserting into the new list
+    while (aux != NULL) {
+        insert_node(&transposed, aux->data, aux->col, aux->line);
+        aux = aux->next;
+    }
+  
+    printf("Matriz transposta (%dx%d):\n", cols, lines);
+    show(&transposed, cols, lines);
+
+    free_list(&transposed);
 }
 
 int main () {
@@ -277,8 +319,12 @@ int main () {
         switch (action)
         {
             case 1:
-                printf("Insira dados sequenciais:\n");
-                insert_sequentially(&list, lines, cols);
+                if (list == NULL){
+                    printf("Insira dados sequenciais:\n");
+                    insert_sequentially(&list, lines, cols);
+                    break;
+                }
+                printf("Lista já inicializada!\n");
                 break;
             case 2:
                 printf("Insira o valor para busca\n");
@@ -308,6 +354,12 @@ int main () {
                 break;
             case 6:
                 show(&list, lines, cols);
+                break;
+            case 7:
+                generate_transpose(&list, lines, cols);
+                break;
+            case 8:
+                show_main_diagonal(&list, lines, cols);
                 break;
             case 9:
                 free_list(&list);
