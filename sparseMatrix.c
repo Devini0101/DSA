@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
-//based on a linear list
+
 typedef struct linearlist
 {
     int data;
