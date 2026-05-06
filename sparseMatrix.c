@@ -231,6 +231,55 @@ void multiply_matrixes(Node** first_list, Node** second_list, int lines, int col
     }
 }
 
+// Shows the main diagonal including zeros
+// Iterates from 0 to min(lines, cols) — for each index i, searches for a node
+// where line == i && col == i. If not found in the list, it's a stored zero.
+void show_main_diagonal(Node** list, int lines, int cols) {
+    int size = lines < cols ? lines : cols;
+
+    printf("Diagonal principal:\n[ ");
+    for (int i = 0; i < size; i++) {
+        int found = 0;
+        Node *aux = *list;
+
+        while (aux != NULL) {
+            // only non-zero values are stored, so finding the node means it's non-zero
+            if (aux->line == i && aux->col == i) {
+                printf("%d", aux->data);
+                found = 1;
+                break;
+            }
+            aux = aux->next;
+        }
+
+        // not in the list = was zero (sparse matrix only stores non-zeros)
+        if (!found) printf("0");
+        if (i < size - 1) printf(", ");
+    }
+    printf(" ]\n");
+}
+
+// Generates and displays the transposed matrix
+// Transpose: rows <-> cols. To build row i of the transposed matrix,
+// we look for nodes where col == i (they were in column i of the original),
+// and place their data at position [line] in the new row.
+void generate_transpose(Node** list, int lines, int cols) {
+    Node *transposed = NULL;
+    Node *aux = *list;
+
+    // swap line <-> col for each node when inserting into the new list
+    while (aux != NULL) {
+        insert_node(&transposed, aux->data, aux->col, aux->line);
+        aux = aux->next;
+    }
+
+   
+    printf("Matriz transposta (%dx%d):\n", cols, lines);
+    show(&transposed, cols, lines);
+
+    free_list(&transposed);
+}
+
 void free_list(Node** list){
     Node *aux, *previous;
     aux = *list;
@@ -308,6 +357,12 @@ int main () {
                 break;
             case 6:
                 show(&list, lines, cols);
+                break;
+            case 7:
+                generate_transpose(&list, lines, cols);
+                break;
+            case 8:
+                show_main_diagonal(&list, lines, cols);
                 break;
             case 9:
                 free_list(&list);
