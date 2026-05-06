@@ -28,7 +28,7 @@ void insert_node (Node** list, int data, int line, int col) {
     item->next = NULL;
 
     // list is empty or the new node comes before the current head
-    if (*list == NULL) {
+    if (*list == NULL || (*list)->line > line || ((*list)->line == line && (*list)->col > col)) {
         item->next = *list;
         *list = item;
         return;
@@ -79,6 +79,20 @@ void show(Node** list, int lines, int cols){
     }
 }
 
+void free_list(Node** list){
+    if (list == NULL || *list == NULL) return;
+    Node *aux = *list;
+    Node *next_node;
+
+    while (aux != NULL) {
+        next_node = aux->next;
+        free(aux);
+        aux = next_node;
+    }
+
+    *list = NULL;
+}
+
 void insert_sequentially(Node** list, int lines, int cols) {
     int data;
     for(int i = 1; i <= lines; i++){
@@ -109,7 +123,7 @@ void search_data(Node** list, int data){
         return;
     }
 
-    printf("Valor (%d) encontrado na linha: %d e coluna: %d", aux->data, aux->line, aux->col);
+    printf("Valor (%d) encontrado na linha: %d e coluna: %d", aux->data, aux->line + 1 , aux->col + 1);
 }
 
 void sum_matrixes(Node** first_list, Node** second_list, int lines, int cols){
@@ -146,6 +160,7 @@ void sum_matrixes(Node** first_list, Node** second_list, int lines, int cols){
         printf("]\n");
     }
 
+    free_list(second_list);
 }
 
 void subtract_matrixes(Node** first_list, Node** second_list, int lines, int cols){
@@ -182,6 +197,7 @@ void subtract_matrixes(Node** first_list, Node** second_list, int lines, int col
         }
         printf(" ]\n");
     }
+    free_list(second_list);
 }
 
 void multiply_matrixes(Node** first_list, Node** second_list, int lines, int cols){
@@ -229,6 +245,7 @@ void multiply_matrixes(Node** first_list, Node** second_list, int lines, int col
         }
         printf(" ]\n");
     }
+    free_list(second_list);
 }
 
 // Shows the main diagonal
@@ -256,16 +273,6 @@ void show_main_diagonal(Node** list, int lines, int cols) {
     printf(" ]\n");
 }
 
-void free_list(Node** list){
-    Node *aux, *previous;
-    aux = *list;
-
-    while (aux != NULL){
-        previous = aux;
-        aux = previous->next;
-        free(previous);
-    }
-}
 
 // replace col with line
 void generate_transpose(Node** list, int lines, int cols) {
