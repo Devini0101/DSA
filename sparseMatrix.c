@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 typedef struct linearlist
 {
-    int data;
+    float data;
     int line, col;
     struct linearlist *next;
 } Node;
@@ -19,7 +20,7 @@ Node * create_node (){
     return p;
 }
 
-void insert_node (Node** list, int data, int line, int col) {
+void insert_node (Node** list, float data, int line, int col) {
     Node* item = create_node();
     item->data = data;
     item->line = line;
@@ -59,7 +60,7 @@ void show(Node** list, int lines, int cols){
     for (current_line = 0; current_line < lines; current_line++){
         printf("[ ");
 
-        int line_items[cols];
+        float line_items[cols];
         memset(line_items, 0, sizeof(line_items)); //fullfill with zeros all the cols values by default
 
         while (aux != NULL && aux->line == current_line) {
@@ -69,7 +70,7 @@ void show(Node** list, int lines, int cols){
         }
 
         for(current_col = 0; current_col < cols; current_col++) {
-            printf("%d ", line_items[current_col]);
+            printf("%.2f ", line_items[current_col]);
             if (current_col < cols - 1) {
                 printf(", ");
             }
@@ -93,11 +94,11 @@ void free_list(Node** list){
 }
 
 void insert_sequentially(Node** list, int lines, int cols) {
-    int data;
+    float data;
     for(int i = 1; i <= lines; i++){
         for(int j = 1; j <= cols; j++){
             printf("Valor para linha %d e coluna %d: \n", i, j);
-            scanf("%d", &data);
+            scanf("%f", &data);
             if (data != 0) {
                 insert_node(list, data, i - 1, j - 1);
             }
@@ -106,11 +107,12 @@ void insert_sequentially(Node** list, int lines, int cols) {
 }
 
 
-void search_data(Node** list, int data){
+void search_data(Node** list, float data){
     Node *aux = *list;
     int found = 0;
     while (aux != NULL ){
-        if (aux->data == data){
+        //se a diferença for menor que 0.001,são iguais
+        if (fabsf(aux->data - data) < 0.001f){
             found = 1;
             break;
         }
@@ -122,7 +124,7 @@ void search_data(Node** list, int data){
         return;
     }
 
-    printf("Valor (%d) encontrado na linha: %d e coluna: %d", aux->data, aux->line + 1 , aux->col + 1);
+    printf("Valor (%.2f) encontrado na linha: %d e coluna: %d", aux->data, aux->line + 1 , aux->col + 1);
 }
 
 void sum_matrixes(Node** first_list, Node** second_list, int lines, int cols){
@@ -133,8 +135,8 @@ void sum_matrixes(Node** first_list, Node** second_list, int lines, int cols){
     printf("Resultado da soma das matrizes:\n");
 
     for (current_line = 0; current_line < lines; current_line ++){
-        int first_list_items[cols];
-        int second_list_items[cols];
+        float first_list_items[cols];
+        float second_list_items[cols];
         memset(first_list_items, 0, sizeof(first_list_items));
         memset(second_list_items, 0, sizeof(second_list_items));
 
@@ -150,8 +152,8 @@ void sum_matrixes(Node** first_list, Node** second_list, int lines, int cols){
 
         printf("[ ");
         for( current_col = 0; current_col < cols; current_col++){
-            int sum = first_list_items[current_col] + second_list_items[current_col];
-            printf("%d ", sum);
+            float sum = first_list_items[current_col] + second_list_items[current_col];
+            printf("%.2f ", sum);
             if (current_col < cols - 1) {
                 printf(", ");
             }
@@ -169,8 +171,8 @@ void subtract_matrixes(Node** first_list, Node** second_list, int lines, int col
 
     printf("Resultado da subtracao das matrizes:\n");
     for (current_line = 0; current_line < lines; current_line++){
-        int first_list_items[cols];
-        int second_list_items[cols];
+        float first_list_items[cols];
+        float second_list_items[cols];
 
         memset(first_list_items, 0, sizeof(first_list_items));
         memset(second_list_items, 0, sizeof(second_list_items));
@@ -188,8 +190,8 @@ void subtract_matrixes(Node** first_list, Node** second_list, int lines, int col
         printf("[ ");
         for ( current_col = 0; current_col < cols; current_col++)
         {
-            int sub = first_list_items[current_col] - second_list_items[current_col];
-            printf("%d",sub);
+            float sub = first_list_items[current_col] - second_list_items[current_col];
+            printf("%.2f",sub);
             if (current_col < cols - 1){
                 printf(", ");
             }
@@ -206,7 +208,7 @@ void multiply_matrixes(Node** first_list, Node** second_list, int lines, int col
     printf("Resultado da multiplicacao das matrizes:\n");
 
     for (current_line = 0; current_line < lines; current_line++){
-        int first_list_line[cols];
+        float first_list_line[cols];
         memset(first_list_line, 0, sizeof(first_list_line));
 
         //first matriz line
@@ -220,7 +222,7 @@ void multiply_matrixes(Node** first_list, Node** second_list, int lines, int col
         for (current_col = 0; current_col < cols; current_col ++){
             Node *aux_second = *second_list; // restart pointer for every column
 
-            int second_list_col[lines];
+            float second_list_col[lines];
             memset(second_list_col, 0, sizeof(second_list_col));
 
             while(aux_second != NULL){
@@ -230,13 +232,13 @@ void multiply_matrixes(Node** first_list, Node** second_list, int lines, int col
                 aux_second = aux_second->next;
             }
 
-            int sum = 0;
+            float sum = 0;
             //iterate through the line multiplying the value from the col from the second matrix and summing the total
             for (int i = 0; i < cols; i++){
                 sum += first_list_line[i] * second_list_col[i];
             }
 
-            printf("%d", sum);
+            printf("%.2f",sum);
             if (current_col < cols - 1){
                 printf(", ");
             }
@@ -258,7 +260,7 @@ void show_main_diagonal(Node** list, int lines, int cols) {
 
         while (aux != NULL) {
             if (aux->line == i && aux->col == i) {
-                printf("%d", aux->data);
+                printf("%.2f", aux->data);
                 found = 1;
                 break;
             }
@@ -266,7 +268,7 @@ void show_main_diagonal(Node** list, int lines, int cols) {
         }
 
         // not in the list = was zero
-        if (!found) printf("0");
+        if (!found) printf("0.00");
         if (i < size - 1) printf(", ");
     }
     printf(" ]\n");
@@ -291,7 +293,8 @@ void generate_transpose(Node** list, int lines, int cols) {
 }
 
 int main () {
-    int lines,cols,action, data_line, data_col, data;
+    int lines,cols,action, data_line, data_col;
+    float data;
     Node *list, *second_list;
     list = NULL;
     second_list = NULL;
@@ -334,7 +337,7 @@ int main () {
                 break;
             case 2:
                 printf("Insira o valor para busca\n");
-                scanf("%d", &data);
+                scanf("%f", &data);
                 search_data(&list, data);
                 break;
             case 3:
