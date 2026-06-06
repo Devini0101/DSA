@@ -7,3 +7,7 @@ Objective : Save only the elements different from 0 from cols and rows using a l
 Maze = A mouse stuck in a maze, where he got to find the exit if exists
 Objective : Generate a maze, with random blocks inside of it, and the mouse got to find the exit, when he gets stuck, traceback his steps by using a stack trace algorithm, and taking another decision about where to go, the maze by itself is not always possible to get out, but the mouse got to find it out by trying to escape
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------ Airport ----------------------------------------------------------------------------------------
+Airport = A airport which contains a landing and a takeoff strip where the planes must be managed
+Objective : Generate a where it is possible to manage the planes the are going to be on the landing strip and the one that are going to takeoff from the airport, implemented with the queue algorithm in buth strips.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
