@@ -40,7 +40,7 @@ Plane* create_plane (int id) {
     printf("\nDestino:");
     scanf("%s", p->to);
 
-    if (strcmp(p->to, p->from) == 0) {
+    while (strcmp(p->to, p->from) == 0) {
         printf("O destino deve ser diferente da origem\n");
         printf("Informe o destino: ");
         scanf("%s", p->to);
@@ -49,7 +49,7 @@ Plane* create_plane (int id) {
     printf("\nQtde de Passageiros: ");
     scanf("%d", &p->passengers);
 
-    if (p->passengers < 1) {
+    while (p->passengers < 1) {
         printf("O aviao deve ter no minimo 1 passageiro\n");
         printf("Informe a quantidade de passageiros: ");
         scanf("%d", &p->passengers);
@@ -60,6 +60,9 @@ Plane* create_plane (int id) {
 }
 
 void enqueue (Queue *queue, Plane *pl) {
+    if (pl == NULL) {
+        return;
+    }
     if (queue->start == NULL) {
         queue->start = pl;
         queue->end = pl;
