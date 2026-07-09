@@ -34,10 +34,10 @@ Plane* create_plane (int id) {
     printf("Informe o nome do aviao (Nao deve conter espacos):");
     scanf("%s",p->name);
 
-    printf("\nOrigem: ");
+    printf("\nOrigem (Nao deve conter espacos): ");
     scanf("%s", p->from);
 
-    printf("\nDestino:");
+    printf("\nDestino (Nao deve conter espacos): ");
     scanf("%s", p->to);
 
     while (strcmp(p->to, p->from) == 0) {
@@ -59,6 +59,43 @@ Plane* create_plane (int id) {
     return p;
 }
 
+void animation(char *plane_name, int is_takeoff) {
+    int spaces;
+    if (is_takeoff == 1) {
+        // aviao se move pra direita de 3 em 3 espacos
+        for (spaces = 0; spaces < 45; spaces += 3) {
+            system("cls"); // Limpa a tela
+            printf("=== PISTA DE DECOLAGEM ===\n");
+            printf("------------------------------------------------------------\n");
+            // espaços antes do avião para da efeito de movimento
+            for (int s = 0; s < spaces; s++) {
+                printf(" ");
+            }
+            printf("[%s] --->\n", plane_name);
+            printf("------------------------------------------------------------\n");
+            printf("Status: Aviao correndo na pista...\n");
+        }
+        system("cls");
+        printf("Aviao [%s] decolou com sucesso!\n\n", plane_name);
+
+    } else {
+        for (spaces = 45; spaces > 0; spaces -= 3) {
+            system("cls"); // Limpa a tela
+            printf("=== PISTA DE POUSO ===\n");
+            printf("------------------------------------------------------------\n");
+            // espaços antes do avião para da efeito de movimento
+            for (int s = 0; s < spaces; s++) {
+                printf(" ");
+            }
+            printf(" <---[%s]\n", plane_name);
+            printf("------------------------------------------------------------\n");
+            printf("Status: Aviao correndo na pista...\n");
+        }
+        system("cls");
+        printf("Aviao [%s] pousou com sucesso!\n\n", plane_name);
+    }
+}
+
 void enqueue (Queue *queue, Plane *pl) {
     if (pl == NULL) {
         return;
@@ -73,7 +110,7 @@ void enqueue (Queue *queue, Plane *pl) {
     queue->size++;
 }
 
-void dequeue (Queue *queue) {
+void dequeue (Queue *queue, int is_takeoff) {
     if (queue->start == NULL){
         printf("A fila esta vazia\n");
         return;
@@ -87,6 +124,7 @@ void dequeue (Queue *queue) {
     }
 
     printf("\nAviao %s de ID: %d com destino a: %s autorizado\n", to_remove->name, to_remove->id, to_remove->to);
+    animation(to_remove->name, is_takeoff);
     free(to_remove);
     queue->size--;
 }
@@ -192,11 +230,11 @@ int main () {
             break;
         }
         case 7:{
-            dequeue(&takeoff);
+            dequeue(&takeoff, 1);
             break;
         }
         case 8:{
-            dequeue(&landing);
+            dequeue(&landing, 0);
             break;
         }
         case 9:{
